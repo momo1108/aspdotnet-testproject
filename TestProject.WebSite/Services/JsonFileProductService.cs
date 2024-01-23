@@ -21,5 +21,33 @@ namespace TestProject.WebSite.Services
                 );
             }
         }
+
+        public void AddRating(string productId, int rating)
+        {
+            var products = GetProducts();
+
+            // LINQ
+            var query = products.First(p => p.Id == productId);
+
+            if(query.Ratings == null)
+            {
+                query.Ratings = new int[] { rating };
+            } else
+            {
+                query.Ratings = [.. query.Ratings, rating];
+            }
+
+            using(var outputStream = File.OpenWrite(JsonFileName))
+            {
+                JsonSerializer.Serialize(
+                    new Utf8JsonWriter(outputStream, new JsonWriterOptions
+                    {
+                        SkipValidation = true,
+                        Indented = true,
+                    }),
+                    products
+                );
+            }
+        }
     }
 }

@@ -8,7 +8,15 @@
     "Description": "This project is a good learning project to get comfortable with soldering and programming an Arduino.",
     "Ratings": [
       5,
-      5
+      4,
+      3,
+      4,
+      5,
+      1,
+      1,
+      2,
+      1,
+      1
     ]
   },
   {
@@ -27,7 +35,18 @@
     "Url": "https://www.hackster.io/agent-hawking-1/bling-your-laptop-with-an-internet-connected-light-show-30e4db",
     "Title": "Bling your Laptop with an Internet-Connected Light Show",
     "Description": "Create a web-connected light-strip API controllable from your website, using the Particle.io.",
-    "Ratings": null
+    "Ratings": [
+      5,
+      4,
+      5,
+      5,
+      5,
+      3,
+      5,
+      5,
+      4,
+      3
+    ]
   },
   {
     "Id": "jenlooper-survival",
