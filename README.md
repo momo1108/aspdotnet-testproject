@@ -134,7 +134,9 @@ IWebHostEnvironment ´Â ¾ÖÇÃ¸®ÄÉÀÌ¼ÇÀÌ ½ÇÇàµÇ°íÀÖ´Â À¥ È£½ºÆÃ È¯°æÀÇ Á¤º¸¸¦ Á¦°øÇ
 
 ÀÌÈÄ AddRating ¸Ş¼­µå´Â »ç¿ëÀÚ°¡ ¼±ÅÃÇÑ ItemÀ» ºÒ·¯¿Â µ¥ÀÌÅÍ¿¡¼­ Ã£¾Æ³»(LINQ È°¿ë) ¼öÁ¤ ÈÄ ´Ù½Ã products.json ÆÄÀÏ¿¡ µ¤¾î¾²±â ÇÑ´Ù.
 
-ÀÌ·Î½á ¼­¹ö ³»ºÎÀûÀ¸·Î ÇÊ¿äÇÑ ¼­ºñ½º´Â ¸ğµÎ ÀÛ¼ºÇß´Ù.
+ÀÌ·Î½á ¼­¹ö ³»ºÎÀûÀ¸·Î ÇÊ¿äÇÑ ¼­ºñ½º´Â ¸ğµÎ ÀÛ¼ºÇß´Ù. ÀÛ¼ºÇÑ ¼­ºñ½º´Â Program.cs ¿¡¼­ `builder.Services.AddTransient<JsonFileProductService>();` ÄÚµå¸¦ ÅëÇØ Ãß°¡ÇÒ ¼ö ÀÖ´Ù.
+
+Ãß°¡ÇØÁÖÁö ¾ÊÀ¸¸é ´Ù¸¥ °÷¿¡¼­ ÄÚµå¸¦ ÀÛ¼ºÇÒ ¶§ ¼­ºñ½º ÄÚµå¸¦ Ã£Áö ¸øÇÑ´Ù.
 
 ### View
 ÇöÀç ÇÁ·ÎÁ§Æ®¿¡ Á¸ÀçÇÏ´Â Index ÆäÀÌÁö¿¡ µ¥ÀÌÅÍ¸¦ °¡Á®¿Í¼­ View¸¦ ¾÷µ¥ÀÌÆ® ÇÒ °ÍÀÌ´Ù.
@@ -232,9 +234,148 @@ namespace TestProject.WebSite.Pages
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
 
-
-<component type="typeof(ProductList)" render-mode="ServerPrerendered" />
+<div class="row row-cols-3 gy-5">
+    @foreach (var product in Model.Products)
+    {
+        <div class="card">
+            <div class="card-img" style="background-image: url('@product.Image');"></div>
+            <div class="card-body">
+                <h5 class="card-title">@product.Title</h5>
+            </div>
+            <div class="card-footer">
+                <small class="text-muted">
+                    <button @onclick="(e => SelectProduct(product.Id))"
+                        data-bs-toggle="modal"
+                        data-bs-target="#productModal"
+                        class="btn btn-primary" >
+                        More Info</button>
+                </small>
+            </div>
+        </div>
+    }
+</div>
 ```
+
+ÅÛÇÃ¸´ ³»ºÎÀûÀ¸·Î bootstrapÀÌ »ç¿ëµÇ°í ÀÖ´Ù. BootstrapÀÇ CSS classµéÀ» ÀÌ¿ëÇØ 3ÁÙ·Î ±¸¼ºµÈ »óÇ° ¸ñ·Ï ÄÚµå¸¦ ÀÛ¼ºÇÏ¿´´Ù.
+
+°­ÀÇ¿¡¼­ »ç¿ëÇÏ´ø °³¹ß ÅÛÇÃ¸´Àº 4³âÀü ÅÛÇÃ¸´ÀÌ´Ù. ÇöÀç ÅÛÇÃ¸´Àº ¸¹ÀÌ ¾÷µ¥ÀÌÆ® µÆ´Âµ¥, ÅÛÇÃ¸´¿¡¼­ »ç¿ëÇÏ´Â bootstrapÀÇ ¹öÀüÀÌ 5 ¹öÀüÀ¸·Î ³Ñ¾î°¡¸é¼­ µ¥ÀÌÅÍ¼Ó¼ºÀÇ ³×ÀÌ¹Ö¿¡ prefix°¡ Ãß°¡µÆ´Ù.
+
+±âÁ¸ÀÇ `data-toggle`, `data-target`, `data-dismiss` µîÀÇ ³×ÀÌ¹Ö¿¡¼­ `data-bs-toggle`, `data-bs-target`, `data-bs-dismiss` ÀÌ·±½ÄÀ¸·Î bootstrap¿¡¼­ »ç¿ëÇÏ´Â µ¥ÀÌÅÍ ¼Ó¼ºÀÌ¶ó´Â °É ±¸ºĞÁş±â À§ÇØ bs(bootstrap)ÀÌ¶ó´Â prefix¸¦ Ãß°¡ÇÑ µí ÇÏ´Ù.
+
+ÄÚµå¸¦ º¸¸é »óÇ°ÀÇ Á¤º¸¸¦ Ãâ·ÂÇÏ´Âµ¥ `@foreach` ¸¦ »ç¿ëÇÏ¿´´Ù. ¿©±â¿¡ IndexModel ¿¡¼­ Á¤ÀÇÇÑ Products ¸¦ »ç¿ëÇØ¼­ °¢ »óÇ°¿¡ µ¿ÀÏÇÑ ÄÚµå¸¦ Àû¿ëÇÏ¿´´Ù.
+
+¿Ï¼ºµÈ Razor View ÄÚµå¸¦ ½ÇÁ¦ url °æ·Î¿Í ¸ÅÇÎÇÏ±â À§ÇØ¼­´Â Program.cs ³»ºÎ¿¡ `builder.Services.AddRazorPages();` ¸Ş¼­µå¿Í `app.MapRazorPages();` ¸Ş¼­µå¸¦ »ç¿ëÇØÁÖ¸é µÈ´Ù.(ÀÌ µÎ ÄÚµå´Â ±âº»ÀûÀ¸·Î Æ÷ÇÔµÇ¾î ÀÖ´Ù)
+
+### Controller
+ÀÌ¹ø »ùÇÃ ÇÁ·ÎÁ§Æ®¿¡¼­´Â Controller¸¦ È°¿ëÇÏ±âº¸´Ü Service¸¦ ¹Ù·Î È£ÃâÇÏ´Â ¹æ½ÄÀ» »ç¿ëÇß´Ù. ÇÏÁö¸¸ »ç¿ë ¹æ¹ıÀº ¾Ë¾ÆµÖ¾ß ÇÏ¹Ç·Î Á¤¸®ÇØº¸ÀÚ.
+
+º¸Åë Controller¿¡¼­´Â API¸¦ ±¸ÃàÇØ¼­ ¿äÃ»ÀÌ ¿À¸é ÇØ´ç ·ÎÁ÷À» ½ÇÇàÇÏ´Â ÄÚµå¸¦ ÀÛ¼ºÇÑ´Ù.
+
+ASP.NET CoreÀÇ ÇÁ·ÎÁ§Æ® ¾ÖÇÃ¸®ÄÉÀÌ¼Ç¿¡´Â `Program.cs` ¶ó´Â ÆÄÀÏÀÌ Á¸ÀçÇÑ´Ù. ¿©±â¿¡´Â ¾ÖÇÃ¸®ÄÉÀÌ¼Ç ½ÃÀÛ ÄÚµå°¡ Æ÷ÇÔµÈ´Ù.
+
+`Program.cs`´Â ´ÙÀ½°ú °°ÀÌ ±¸¼ºµÈ´Ù.
+
+- ¾Û¿¡¼­ ¿ä±¸ÇÏ´Â ¼­ºñ½º°¡ ±¸¼ºµË´Ï´Ù.
+- ¾ÛÀÇ ¿äÃ» Ã³¸® ÆÄÀÌÇÁ¶óÀÎÀÌ ÀÏ·ÃÀÇ ¹Ìµé¿ş¾î ±¸¼º ¿ä¼Ò·Î Á¤ÀÇµË´Ï´Ù.
+
+±¸Çö¿¡´Â °£´ÜÇÑ ¹æ¹ı°ú Á¤¼®ÀûÀÎ ¹æ¹ıÀÌ ÀÖ´Ù.
+
+¸ÕÀú °£´ÜÇÑ ¹æ¹ıÀ» ¾Ë¾Æº¸ÀÚ.
+
+`app.MapGet`, `app.MapPost` µîÀÇ ¸Ş¼­µå¸¦ È°¿ëÇÏ´Â ¹æ¹ıÀÌ´Ù.
+
+¿¹¸¦ µé¾î ´ÙÀ½ÀÇ ÄÚµå¸¦ »ìÆìº¸ÀÚ.
+
+```cs
+app.MapGet("/products", (context) =>
+{
+    var products = app.Services.GetService<JsonFileProductService>().GetProducts();
+    var json = JsonSerializer.Serialize<IEnumerable<Product>>(products);
+    return context.Response.WriteAsync(json);
+});
+```
+
+À§ ÄÚµå´Â /products °æ·Î¿¡ Get ¿äÃ»À» ¸ÅÇÎÇÏ´Â ÄÚµåÀÌ´Ù. º¸´Ù½ÃÇÇ »ç¿ë ¹æ½Ä ÀÚÃ¼´Â °£´ÜÇÏÁö¸¸, ½ÃÀÛ ÄÚµå¸¦ Á¤ÀÇÇÏ´Â `Program.cs` ¿¡ Controller ÄÚµå¸¦ Æ÷ÇÔ½ÃÅ°´Â °Í ÀÚÃ¼°¡ ¹Ù¶÷Á÷ÇÏÁö ¾Ê´Ù.
+
+¿äÃ»ÀÌ ¸¹¾ÆÁú¼ö·Ï ´õ ½ÃÀÛÄÚµå°¡ ´õ·¯¿öÁö±âµµ ÇÑ´Ù.
+
+µû¶ó¼­ Á¤¼®ÀûÀÎ ¹æ¹ıÀ» ¾Ë¾Æº¸ÀÚ.
+
+Controllers Æú´õ¸¦ »ı¼º ÈÄ ¿©±â¿¡ Controller ÄÚµå¸¦ ÀÛ¼ºÇÏ´Â ¹æ½ÄÀÌ´Ù.
+
+»óÇ°¿¡ µû¸¥ »óÈ£ÀÛ¿ëÀÌ ÇÊ¿äÇÏ¹Ç·Î `ProductsController.cs` ¶ó°í ³×ÀÌ¹ÖÀ» ÇÏ°í »ı¼ºÇØº¸ÀÚ.
+
+Visual Studio¿¡¼­´Â »õ·Î¿î ÆÄÀÏÀ» Add ÇÒ ¶§ ±âº» ÅÛÇÃ¸´µéÀ» Á¦°øÇÏÁÖ´Âµ¥, Controller ÅÛÇÃ¸´À» ¼±ÅÃÇÏ¸é ºü¸£°Ô ±¸¼ºÇÒ ¼ö ÀÖ´Ù.
+
+°­ÀÇ¿¡¼­ ¼±ÅÃÇÑ ÅÛÇÃ¸´Àº API - API Controller(Empty) ÅÛÇÃ¸´ÀÌ´Ù. Á¦°øµÇ´Â ÄÚµå´Â ´ÙÀ½°ú °°´Ù.
+
+```cs
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace TestProject.WebSite.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ProductsController : ControllerBase
+    {
+    }
+}
+```
+
+º¸´Ù½ÃÇÇ Controller Å¬·¡½º´Â ControllerBase Å¬·¡½º¸¦ »ó¼Ó¹Ş¾Æ¼­ ±âº»ÀûÀÎ ±â´ÉµéÀ» »ç¿ëÇÑ´Ù.
+
+´ë°ıÈ£(`[]`) ·Î ¹­ÀÎ ÄÚµåµéÀº Controller°¡ ¸ÅÇÎµÉ °æ·Î¿Í ApiController ÀÓÀ» ¸í½ÃÇÑ´Ù.
+
+±âº»ÀûÀÎ °æ·Î´Â api/ ¶ó´Â prefix°¡ ºÙ´Â´Ù. ÀÌ´Â »ç¿ëÀÚ ÀÓÀÇ·Î »èÁ¦³ª º¯°æÇØµµ µÈ´Ù. °æ·Î ³»ºÎ¿¡ ´ë°ıÈ£(`[]`)·Î °¨½ÎÁø controller ¶ó´Â ÅäÅ«Àº ÆÄÀÏ¸í(Å¬·¡½º¸í?)ÀÌ ´ëÃ¼ÇÏ´Â °Í °°´Ù.
+
+µû¶ó¼­ À§ »ùÇÃ ÄÚµåÀÇ °æ¿ì `¼­¹öÁÖ¼Ò/api/produdcts` °æ·Î·Î API ¿äÃ»À» ¹Ş´Â ÄÚµå°¡ µÈ´Ù.
+
+»ùÇÃ ÇÁ·ÎÁ§Æ®¿¡¼­ ÀÛ¼ºÇÑ ÄÚµå¸¦ »ìÆìº¸ÀÚ.
+
+```cs
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using TestProject.WebSite.Models;
+using TestProject.WebSite.Services;
+
+namespace TestProject.WebSite.Controllers
+{
+    [Route("[controller]")] // ÆÄÀÏÀÌ¸§À¸·Î ±âº»¼³Á¤ µÇ´Âµí.
+    [ApiController]
+    public class ProductsController(JsonFileProductService productService) : ControllerBase // ControllerBase ÀÚ½Ä Å¬·¡½º
+    {
+        public JsonFileProductService ProductService { get; } = productService;
+
+        [HttpGet]
+        public IEnumerable<Product> Get()
+        {
+            return ProductService.GetProducts();
+        }
+
+        [Route("Rate")]
+        [HttpGet]
+        public ActionResult Get(
+            [FromQuery] string productId, 
+            [FromQuery] int rating
+        )
+        {
+            ProductService.AddRating(productId, rating);
+            return Ok();
+        }
+    }
+}
+```
+
+`[HttpGet]` À» »ç¿ëÇØ Get ¿äÃ»À» ¸ÅÇÎÇÒ ¼ö ÀÖ°í, ¹İÈ¯ÇÒ µ¥ÀÌÅÍ¸¦ return ÇÏ¸é µÈ´Ù.
+
+Å¬·¡½º ³»ºÎ¿¡µµ `[Route("°æ·Î")]` ¸¦ ´Ù½Ã »ç¿ëÇØ SubRoute¸¦ ¼³Á¤ÇÒ ¼öµµ ÀÖ´Ù. µû·Î ¹İÈ¯ÇÒ ³»¿ëÀÌ ¾øÀ¸¸é ActionResult ¸¦ return typeÀ¸·Î ÁöÁ¤ÇÏ°í `Ok` ¸Ş¼­µå¸¦ »ç¿ëÇÏ¸é µÈ´Ù.
+
+¶ÇÇÑ Get ¸Ş¼­µåÀÇ ¸Å°³º¯¼ö¿¡ `[FromQuery]` ¸¦ »ç¿ëÇØ QueryString ¿¡¼­ °ªÀ» »Ì¾Æ »ç¿ëÇÒ ¼ö ÀÖ´Ù.
+
+`[HttpGet]` ¸»°íµµ `[HttpPost]`, `[HttpPut]` µî ´Ù¾çÇÑ ¿äÃ»À» ¸ÅÇÎÇÒ ¼ö ÀÖ°í, `[FromBody]` ¸¦ »ç¿ëÇØ bodyÀÇ ³»¿ëÀ» »ç¿ëÇÒ ¼öµµ ÀÖ´Ù.
+
+ÀÌ·¸°Ô Conroller ÄÚµå¸¦ ÀÛ¼º ÈÄ Program.cs ¿¡ `builder.Services.AddControllers();` ¸Ş¼­µå¿Í `app.MapControllers();` ¸Ş¼­µå¸¦ »ç¿ëÇØÁÖ¸é µÈ´Ù.
 
 ## Blazor
 
@@ -296,10 +437,6 @@ namespace TestProject.WebSite.Pages
 
 ~~±×¸®°í ¾Æ·¡ÀÇ ½ºÅ©¸³Æ®¸¦ ºÒ·¯¿À´Â ÄÚµå¸¦ Á¦°ÅÇØº¸¾Ò´Âµ¥ ÀÏ´Ü µ¿ÀÛ¿¡´Â ¹®Á¦°¡ ¾ø¾î¼­ »©µÎ¾ú´Ù. ¹®Á¦°¡ »ı±â¸é ´Ù½Ã ³ÖÀÚ.~~(¸ğ´ŞÀÌ ¾È¿­·Á....)
 
-°­ÀÇ¿¡¼­ »ç¿ëÇÏ´ø °³¹ß ÅÛÇÃ¸´Àº 4³âÀü ÅÛÇÃ¸´ÀÌ´Ù. ÇöÀç ÅÛÇÃ¸´Àº ¸¹ÀÌ ¾÷µ¥ÀÌÆ® µÆ´Âµ¥, ÅÛÇÃ¸´¿¡¼­ »ç¿ëÇÏ´Â bootstrapÀÇ ¹öÀüÀÌ 5 ¹öÀüÀ¸·Î ³Ñ¾î°¡¸é¼­ µ¥ÀÌÅÍ¼Ó¼ºÀÇ ³×ÀÌ¹Ö¿¡ prefix°¡ Ãß°¡µÆ´Ù.
-
-±âÁ¸ÀÇ `data-toggle`, `data-target`, `data-dismiss` µîÀÇ ³×ÀÌ¹Ö¿¡¼­ `data-bs-toggle`, `data-bs-target`, `data-bs-dismiss` ÀÌ·±½ÄÀ¸·Î bootstrap¿¡¼­ »ç¿ëÇÏ´Â µ¥ÀÌÅÍ ¼Ó¼ºÀÌ¶ó´Â °É ±¸ºĞÁş±â À§ÇØ bs(bootstrap)ÀÌ¶ó´Â prefix¸¦ Ãß°¡ÇÑ µí ÇÏ´Ù.
-
 `@for` µğ·ºÆ¼ºê »ç¿ë ½Ã ÁÖÀÇ»çÇ×
 
 ```cshtml
@@ -344,6 +481,10 @@ Razor Page°¡ ·»´õ¸µ µÇ´Â °úÁ¤ÀÌ ¹ºÁö´Â Á¤È®È÷ ¾Ë¾ÆºÁ¾ß °ÚÁö¸¸, Àû¾îµµ µğ¹ö±ëÀ» Å
 ```
 
 ´Ş¶óÁø °ÍÀº µü ÇÏ³ª star ÀÇ °ªÀ» currentStar ¶ó´Â º¯¼ö¿¡ ÀúÀåÇÑ °ÍÀÌ´Ù. ÀÌ º¯¼ö´Â Áö¿ªº¯¼öÀÌ°í, for loop°¡ ÁøÇàµÊ¿¡ µû¶ó °¢°¢ »õ·Î ÃÊ±âÈ­ µÇ´Â º¯¼öÀÌ±â ¶§¹®¿¡ ¿øÇÏ´Â ´ë·Î µ¿ÀÛÀ» ÀÌ²ø¾î³¾ ¼ö ÀÖ¾ú´Ù.
+
+ÀÌ¿Ü¿¡µµ ÄÄÆ÷³ÍÆ®¿¡ ¸®¾×Æ®Ã³·³ Property¸¦ »ç¿ëÇÒ ¼ö ÀÖ³ª Ã£¾ÆºÃ´Âµ¥ Parameter¶ó´Â °³³äÀÌ ÀÖ´õ¶ó. ±Ùµ¥ µ¿ÀÛÀÌ ³»¸¾´ë·Î ¾ÈµÅ¼­ Á» ´õ ¾Ë¾ÆºÁ¾ßÇÒµí.
+
+¶óÀÌÇÁ»çÀÌÅ¬µµ ¾Ë¾Æ¾ß ÇÒ µí ÇÏ´Ù.(https://learn.microsoft.com/en-us/aspnet/core/blazor/components/lifecycle?view=aspnetcore-8.0#lifecycle-events)
 
 ## Publish project with Azure
 ¿Ï¼ºÇÑ ÇÁ·ÎÁ§Æ®¸¦ Azure¸¦ ÅëÇØ ¹èÆ÷ÇØº¸ÀÚ.

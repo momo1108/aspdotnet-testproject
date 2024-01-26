@@ -77,7 +77,12 @@
     "Url": "https://twitter.com/sailorhg/status/1090113666911891456",
     "Title": "Light-up Corsage",
     "Description": "Light-up corsage I made with my summer intern.",
-    "Ratings": null
+    "Ratings": [
+      2,
+      1,
+      4,
+      5
+    ]
   },
   {
     "Id": "sailorhg-kit",
@@ -95,7 +100,15 @@
     "Url": "https://twitter.com/sailorhg/status/1090117277540745216",
     "Title": "Heart-shaped LED",
     "Description": "custom molded heart shaped LED with sprinkles.",
-    "Ratings": null
+    "Ratings": [
+      4,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5
+    ]
   },
   {
     "Id": "selinazawacki-soi-shirt",

@@ -4,25 +4,29 @@
 @inject JsonFileProductService ProductService
 
 <div class="row row-cols-3 gy-5">
-    @foreach (var product in ProductService.GetProducts())
+    @if(Products != null)
     {
-        <div class="card">
-            <div class="card-img" style="background-image: url('@product.Image');"></div>
-            <div class="card-body">
-                <h5 class="card-title">@product.Title</h5>
+        @foreach (var product in Products)
+        {
+            <div class="card">
+                <div class="card-img" style="background-image: url('@product.Image');"></div>
+                <div class="card-body">
+                    <h5 class="card-title">@product.Title</h5>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">
+                        <button @onclick="(e => SelectProduct(product.Id))"
+                            data-bs-toggle="modal"
+                            data-bs-target="#productModal"
+                            class="btn btn-primary" >
+                            More Info</button>
+                    </small>
+                </div>
             </div>
-            <div class="card-footer">
-                <small class="text-muted">
-                    <button @onclick="(e => SelectProduct(product.Id))"
-                        data-bs-toggle="modal"
-                        data-bs-target="#productModal"
-                        class="btn btn-primary" >
-                        More Info</button>
-                </small>
-            </div>
-        </div>
+        }
     }
 </div>
+<button @onclick="e=>TestFunc()">test</button>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
@@ -75,6 +79,9 @@
 </div>
 
 @code {
+    [Parameter]
+    public IEnumerable<Product> Products { get; set; }
+
     Product selectedProduct;
     string selectedProductId;
 
@@ -118,5 +125,13 @@
     void SetSelectedRating(int rating)
     {
         selectedRating = rating;
+    }
+
+    void TestFunc()
+    {
+        foreach(Product p in Products)
+        {
+            System.Console.WriteLine(p);
+        }
     }
 }
